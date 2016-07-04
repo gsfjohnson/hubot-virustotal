@@ -32,12 +32,16 @@ module.exports = (robot) ->
     virustotal.getUrlReport url, (err, res) ->
       return robot.send {room: msg.envelope.user.name}, "Virus total: `#{err.json.verbose_msg}`." if err
 
-      clean = for scanner, obj of res.scans
-        "`#{scanner}`" unless obj.detected
+      clean = []
+      for scanner, obj of res.scans
+        clean.push "`#{scanner}`" unless obj.detected
+      clean.push "none" unless clean.length > 0
 
-      unclean = for scanner, obj of res.scans
-        "`#{scanner}` (#{obj.result})" if obj.detected
+      unclean = []
+      for scanner, obj of res.scans
+        unclean.push "`#{scanner}` (#{obj.result})" if obj.detected
+      unclean.push "none" unless unclean.length > 0
 
-      return robot.send {room: msg.envelope.user.name}, "Virus total: #{res.resource} rated clean by #{clean.join ', '}.  Rated unclean by #{unclean.join ', '}."
+      return robot.send {room: msg.envelope.user.name}, "Virus total: `#{res.resource.replace('http:\/\/','')}` rated clean by #{clean.join ', '}.  Rated unclean by #{unclean.join ', '}."
 
     return
