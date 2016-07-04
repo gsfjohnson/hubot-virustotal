@@ -29,7 +29,7 @@ module.exports = (robot) ->
   robot.respond /virustotal help$/, (msg) ->
     cmds = []
     arr = [
-      "auth url <url> - get url report"
+      "virustotal url <url> - get url report"
     ]
 
     for str in arr
