@@ -1,0 +1,37 @@
+{
+  "name": "hubot-virustotal",
+  "description": "Hubot plugin get url reports from virus total website",
+  "version": "0.0.1",
+  "author": "Glen Johnson <gsfjohnson@gmail.com>",
+  "license": "MIT",
+  "keywords": [
+    "hubot",
+    "hubot-scripts"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gsfjohnson/hubot-virustotal.git"
+  },
+  "bugs": {
+    "url": "https://github.com/gsfjohnson/hubot-virustotal/issues"
+  },
+  "dependencies": {
+    "coffee-script": "~1.7"
+    ,"moment": "^2.13.0"
+    ,"virustotal.js": "git://github.com/yeya/virustotal.js#master"
+  },
+  "devDependencies": {
+    "mocha": "*",
+    "chai": "*",
+    "sinon-chai": "*",
+    "sinon": "*",
+    "grunt-mocha-test": "~0.7.0",
+    "grunt-release": "~0.7.0",
+    "matchdep": "~0.1.2",
+    "grunt-contrib-watch": "~0.5.3"
+  },
+  "main": "index.coffee",
+  "scripts": {
+    "test": "grunt test"
+  }
+}
