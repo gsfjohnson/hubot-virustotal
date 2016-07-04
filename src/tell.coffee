@@ -42,6 +42,6 @@ module.exports = (robot) ->
         unclean.push "`#{scanner}` (#{obj.result})" if obj.detected
       unclean.push "none" unless unclean.length > 0
 
-      return robot.send {room: msg.envelope.user.name}, "Virus total: `#{res.resource.replace('http:\/\/','')}` rated clean by #{clean.join ', '}.  Rated unclean by #{unclean.join ', '}."
+      return robot.send {room: msg.envelope.user.name}, "Virus total: `#{res.resource.replace('http:\/\/','')}` rated clean by #{clean.length}.  Rated unclean by #{unclean.length}.  More information at #{res.permalink}"
 
     return
