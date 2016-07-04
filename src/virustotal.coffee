@@ -19,6 +19,7 @@
 moment = require 'moment'
 virustotal = require 'virustotal.js'
 
+modulename = 'Virus total'
 maxRequestsPerInterval = 4
 requestWindowMs = 60 * 1000
 defaultwaitms = 1000
@@ -29,7 +30,8 @@ sq = []
 queueUrlReport = (robot, msg, url) ->
   ms = Date.now()
   if sq.length >= maxRequestsPerInterval
-    msgout = "Max requests per interval (#{maxRequestsPerInterval}) reached. Your request will be serviced as soon as possible.  Window + Queue: #{sq.length}."
+    msgout = "#{modulename}: api max requests per interval reached. Your request will be serviced as soon as possible.  Window `#{sq.length}`."
+    robot.logger.info "#{msgout} [#{msg.envelope.user.name}]"
     robot.send {room: msg.envelope.user.name}, msgout
   sq.push { whenqueued: ms, sent: false, robot: robot, msg: msg, url: url }
   # robot.logger.debug "sq: { whenqueued: #{ms}, url: #{url} }"
@@ -68,7 +70,7 @@ getUrlReport = (robot, msg, url) ->
   # robot.logger.info "sq: sending virustotal request for #{url}"
   virustotal.getUrlReport url, (err, res) ->
     if err
-      msgout = "Virus total: error: `#{err.json.verbose_msg}`."
+      msgout = "#{modulename}: error: `#{err.json.verbose_msg}`."
       robot.logger.info "#{msgout} [#{msg.envelope.user.name}]"
       return robot.send {room: msg.envelope.user.name}, msgout
 
@@ -77,7 +79,7 @@ getUrlReport = (robot, msg, url) ->
       r.clean++ unless obj.detected
       r.unclean++ if obj.detected
 
-    msgout = "Virus total: `#{res.resource.replace('http:\/\/','')}` rated clean by #{r.clean}, unclean by #{r.unclean}.  More info: #{res.permalink}"
+    msgout = "#{modulename}: `#{res.resource.replace('http:\/\/','')}` rated clean by #{r.clean}, unclean by #{r.unclean}.  More info: #{res.permalink}"
     robot.logger.info "#{msgout} [#{msg.envelope.user.name}]"
     return robot.send {room: msg.envelope.user.name}, msgout
 
@@ -85,7 +87,7 @@ getUrlReport = (robot, msg, url) ->
 module.exports = (robot) ->
 
   unless process.env.HUBOT_VIRUSTOTAL_API?
-    robot.logger.warning 'The HUBOT_VIRUSTOTAL_API environment variable not set'
+    robot.logger.warning "#{modulename}: environment variable HUBOT_VIRUSTOTAL_API not set."
   else
     virustotal.setKey(process.env.HUBOT_VIRUSTOTAL_API)
 
@@ -106,6 +108,6 @@ module.exports = (robot) ->
   robot.respond /virustotal url (.+)$/i, (msg) ->
     url = msg.match[1]
 
-    robot.logger.info "Virus total: url report request: #{url} [#{msg.envelope.user.name}]"
+    robot.logger.info "#{modulename}: url report request: #{url} [#{msg.envelope.user.name}]"
 
     return queueUrlReport robot, msg, url
