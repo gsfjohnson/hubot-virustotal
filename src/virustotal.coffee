@@ -41,8 +41,13 @@ module.exports = (robot) ->
   robot.respond /virustotal url (.+)$/i, (msg) ->
     url = msg.match[1]
 
+    robot.logger.info "#{msg.envelope.user.name} requested virustotal url scan of #{url}"
+    
     virustotal.getUrlReport url, (err, res) ->
-      return robot.send {room: msg.envelope.user.name}, "Virus total: `#{err.json.verbose_msg}`." if err
+      if err
+        msgout = "Virus total: error: `#{err.json.verbose_msg}`."
+        robot.logger.info "Response to #{msg.envelope.user.name}: #{msgout}"
+        return robot.send {room: msg.envelope.user.name}, msgout
 
       clean = []
       for scanner, obj of res.scans
@@ -52,6 +57,8 @@ module.exports = (robot) ->
       for scanner, obj of res.scans
         unclean.push "`#{scanner}` (#{obj.result})" if obj.detected
 
-      return robot.send {room: msg.envelope.user.name}, "Virus total: `#{res.resource.replace('http:\/\/','')}` rated clean by #{clean.length}.  Rated unclean by #{unclean.length}.  More information at #{res.permalink}"
+      msgout = "Virus total: `#{res.resource.replace('http:\/\/','')}` rated clean by #{clean.length}.  Rated unclean by #{unclean.length}.  More information: #{res.permalink}"
+      robot.logger.info "Response to #{msg.envelope.user.name}: #{msgout}"
+      return robot.send {room: msg.envelope.user.name}, msgout
 
     return
