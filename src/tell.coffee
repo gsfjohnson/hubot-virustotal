@@ -36,11 +36,7 @@ module.exports = (robot) ->
       cmd = str.split " - "
       cmds.push "`#{cmd[0]}` - #{cmd[1]}"
 
-    if replyInPrivate and msg.message?.user?.name?
-      msg.reply 'replied to you in private!'
-      robot.send {room: msg.message?.user?.name}, cmds.join "\n"
-    else
-      msg.reply cmds.join "\n"
+    robot.send {room: msg.message?.user?.name}, cmds.join "\n"
 
   robot.respond /virustotal url (.+)$/i, (msg) ->
     url = msg.match[1]
