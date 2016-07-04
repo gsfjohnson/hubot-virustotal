@@ -57,7 +57,7 @@ module.exports = (robot) ->
       for scanner, obj of res.scans
         unclean.push "`#{scanner}` (#{obj.result})" if obj.detected
 
-      msgout = "Virus total: `#{res.resource.replace('http:\/\/','')}` rated clean by #{clean.length}.  Rated unclean by #{unclean.length}.  More information: #{res.permalink}"
+      msgout = "Virus total: `#{res.resource.replace('http:\/\/','')}` rated clean by #{clean.length}.  Rated unclean by #{unclean.length}.  More information: <#{res.permalink}|link>."
       robot.logger.info "#{msgout} [#{msg.envelope.user.name}]"
       return robot.send {room: msg.envelope.user.name}, msgout
 
