@@ -41,12 +41,12 @@ module.exports = (robot) ->
   robot.respond /virustotal url (.+)$/i, (msg) ->
     url = msg.match[1]
 
-    robot.logger.info "#{msg.envelope.user.name} requested virustotal url scan of #{url}"
+    robot.logger.info "Virus total: requested url report for #{url} [#{msg.envelope.user.name}]"
     
     virustotal.getUrlReport url, (err, res) ->
       if err
         msgout = "Virus total: error: `#{err.json.verbose_msg}`."
-        robot.logger.info "Response to #{msg.envelope.user.name}: #{msgout}"
+        robot.logger.info "#{msgout} [#{msg.envelope.user.name}]"
         return robot.send {room: msg.envelope.user.name}, msgout
 
       clean = []
@@ -58,7 +58,7 @@ module.exports = (robot) ->
         unclean.push "`#{scanner}` (#{obj.result})" if obj.detected
 
       msgout = "Virus total: `#{res.resource.replace('http:\/\/','')}` rated clean by #{clean.length}.  Rated unclean by #{unclean.length}.  More information: #{res.permalink}"
-      robot.logger.info "Response to #{msg.envelope.user.name}: #{msgout}"
+      robot.logger.info "#{msgout} [#{msg.envelope.user.name}]"
       return robot.send {room: msg.envelope.user.name}, msgout
 
     return
