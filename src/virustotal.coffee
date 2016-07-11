@@ -81,7 +81,7 @@ getUrlReport = (robot, msg, url) ->
 
     msgout = "#{modulename}: `#{res.resource.replace('http:\/\/','')}` rated clean by #{r.clean}, unclean by #{r.unclean}.  More info: #{res.permalink}"
     robot.logger.info "#{msgout} [#{msg.envelope.user.name}]"
-    return robot.send {room: msg.envelope.user.name}, msgout
+    return msg.reply msgout
 
 
 module.exports = (robot) ->
@@ -93,7 +93,7 @@ module.exports = (robot) ->
 
   setTimeout servicequeue, defaultwaitms
 
-  robot.respond /virustotal help$/, (msg) ->
+  robot.respond /(?:virustotal|vt) help$/, (msg) ->
     cmds = []
     arr = [
       "virustotal url <url> - get url report"
@@ -105,7 +105,7 @@ module.exports = (robot) ->
 
     robot.send {room: msg.message?.user?.name}, cmds.join "\n"
 
-  robot.respond /virustotal url (.+)$/i, (msg) ->
+  robot.respond /(?:virustotal|vt) url (.+)$/i, (msg) ->
     url = msg.match[1]
 
     robot.logger.info "#{modulename}: url report request: #{url} [#{msg.envelope.user.name}]"
